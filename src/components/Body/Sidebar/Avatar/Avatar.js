@@ -1,13 +1,11 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { action, AVATAR, NAME } from '../../../../redux/actions';
+import { avatarAction, nameAction } from '../../../../redux/reducers';
 
 const Avatar = ({ size }) => {
 
   const dispatch = useDispatch();
-
-  const avatar = useSelector(state => state.avatar);
-  const name = useSelector(state => state.name);
+  const { avatar, name } = useSelector(state => state.user);
 
   return (
     (
@@ -15,11 +13,12 @@ const Avatar = ({ size }) => {
         <img
           onClick={() => {
             const url = prompt('Enter new url');
-            dispatch(action(AVATAR, url));
+            dispatch(avatarAction(url));
           }}
-          onContextMenu={() => {
+          onContextMenu={(e) => {
+            e.preventDefault();
             const name = prompt('Enter new name');
-            dispatch(action(NAME, name));
+            dispatch(nameAction(name));
           }}
           className={`user-avatar ${size ?? ''}`} src={avatar} alt={name} />
       </div>

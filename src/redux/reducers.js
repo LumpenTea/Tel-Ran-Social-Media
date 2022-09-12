@@ -1,25 +1,51 @@
-//          STATE
-//{
-//     avatar: string (url) (change on right click action)
-//     name: string (change on left click action)
-//     followers: number (decrease and increase actions)
-//     following: number (decrease and increase actions)
-// }
+import { createSlice } from "@reduxjs/toolkit"
 
-import { AVATAR, FOLLOWERS_DECREASE, FOLLOWERS_INCREASE, FOLLOWING_DECREASE, FOLLOWING_INCREASE, NAME } from "./actions";
-
-export const reducer = (state, action) => {
-    switch (action.type) {
-        case AVATAR: return { ...state, avatar: action.payload ? action.payload : state.avatar };
-        case NAME: return { ...state, name: action.payload ? action.payload : state.name };
-        case FOLLOWERS_DECREASE:
-            const followersResult = state.followers - action.payload;
-            return { ...state, followers: followersResult < 0 ? state.followers : followersResult};
-        case FOLLOWERS_INCREASE: return {...state, followers: state.followers + action.payload};
-        case FOLLOWING_DECREASE:
-            const followingResult = state.following - action.payload;
-            return {...state, following: followingResult < 0 ? state.following : followingResult};
-        case FOLLOWING_INCREASE: return {...state, following: state.following + action.payload};
-        default: return state;
+const twitterState = {
+    user: {
+        avatar: 'https://www.gravatar.com/avatar/0?d=monsterid',
+        name: 'Monster'
+    },
+    stats: {
+        followers: 100,
+        following: 300
     }
 }
+
+const userSlice = createSlice({
+    name: 'user',
+    initialState: twitterState.user,
+    reducers: {
+        avatarAction(state, action) {
+            state.avatar = action.payload ? action.payload : state.avatar;
+        },
+        nameAction(state, action) {
+            state.name = action.payload ? action.payload : state.name;
+        }
+    }
+})
+
+const statsSlice = createSlice({
+    name: 'stats',
+    initialState: twitterState.stats,
+    reducers: {
+        incrementFollowers(state) {
+            state.followers++;
+        },
+        decrementFollowers(state) {
+            const res = state.followers - 1;
+            state.followers = res < 0 ? state.followers : res;
+        },
+        incrementFollowing(state) {
+            state.following++;
+        },
+        decrementFollowing(state) {
+            const res = state.following - 1;
+            state.following = res < 0 ? state.following : res;
+        }
+    }
+})
+
+export const { avatarAction, nameAction } = userSlice.actions;
+export const { incrementFollowers, decrementFollowers, incrementFollowing, decrementFollowing } = statsSlice.actions;
+export const userReducer = userSlice.reducer;
+export const statsReducer = statsSlice.reducer;
